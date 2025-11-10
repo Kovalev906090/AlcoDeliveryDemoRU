@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlcoDelivery - Алкоголь на праздник с доставкой</title>
+    <style>
+        :root {
+            --primary: #8b4513;
+            --secondary: #d4af37;
+            --dark: #1a1a1a;
+            --darker: #0d0d0d;
+            --light: #f5f5f5;
+            --gray: #2a2a2a;
+            --success: #28a745;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--dark);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: var(--primary);
+            color: var(--secondary);
+        }
+        
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--secondary);
+            color: var(--dark);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        /* Mobile menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Main Content */
+        main {
+            min-height: calc(100vh - 120px);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Home Page Styles */
+        .hero {
+            padding: 60px 0;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://placehold.co/1200x600/1a1a1a/8b4513?text=Alcohol+Delivery') center/cover;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--secondary);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid var(--secondary);
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .features {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--secondary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background-color: var(--dark);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid var(--gray);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--secondary);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .feature-card p {
+            line-height: 1.6;
+        }
+        
+        /* Catalog Styles */
+        .catalog {
+            padding: 40px 0;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-card {
+            background-color: var(--dark);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid var(--gray);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+        
+        .product-image {
+            height: 200px;
+            background-color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .add-to-cart {
+            background-color: var(--primary);
+            color: var(--secondary);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .add-to-cart:hover {
+            background-color: var(--secondary);
+            color: var(--dark);
+        }
+        
+        /* Cart Styles */
+        .cart {
+            padding: 40px 0;
+        }
+        
+        .cart-items {
+            list-style: none;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            color: var(--secondary);
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-btn {
+            background-color: var(--primary);
+            color: var(--secondary);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .remove-item {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        
+        .cart-total {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            text-align: right;
+            color: var(--secondary);
+        }
+        
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #218838;
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .contact-card {
+            background-color: var(--dark);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--gray);
+        }
+        
+        .contact-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .contact-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .contact-card p {
+            margin-bottom: 15px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid var(--gray);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+                max-width: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                display: none;
+            }
+            
+            nav ul.active {
+                display: flex;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🍷</span>
+                    <span>AlcoDelivery</span>
+                </div>
+                
+                <nav>
+                    <ul id="nav-menu">
+                        <li><a href="#" class="tab-link active" data-tab="home">Главная</a></li>
+                        <li><a href="#" class="tab-link" data-tab="catalog">Каталог</a></li>
+                        <li><a href="#" class="tab-link" data-tab="cart">Корзина</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="cart-icon" id="cart-icon">
+                    <span>🛒</span>
+                    <div class="cart-count">0</div>
+                </div>
+                
+                <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <!-- Home Tab -->
+        <section id="home" class="tab-content active">
+            <div class="hero">
+                <div class="container">
+                    <h1>Алкоголь на праздники с доставкой</h1>
+                    <p>Закажите качественный алкоголь с доставкой прямо к вам домой. Работаем по всему городу, даже в праздничные дни когда магазины закрыты!</p>
+                    <a href="#" class="btn tab-link" data-tab="catalog">Сделать заказ</a>
+                    <a href="#contact" class="btn btn-secondary">Связаться с нами</a>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="container">
+                    <h2 class="section-title">Почему выгодно покупать у нас?</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🚚</div>
+                            <h3>Быстрая доставка</h3>
+                            <p>Доставляем в течение 1-2 часов по всему городу. Даже в праздничные дни!</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🥇</div>
+                            <h3>Первые в городе</h3>
+                            <p>Мы первые, кто начал доставлять алкоголь по городу. Опыт и надежность!</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🛡️</div>
+                            <h3>Гарантия качества</h3>
+                            <p>Не теряем клиентов - гарантируем качество и своевременную доставку.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🎉</div>
+                            <h3>Алкоголь на праздники</h3>
+                            <p>Праздничные дни? Не проблема! У нас можно купить алкоголь когда в магазинах запрет.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">💰</div>
+                            <h3>Выгодные цены</h3>
+                            <p>Конкурентные цены и регулярные акции для постоянных клиентов.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">📞</div>
+                            <h3>Поддержка 24/7</h3>
+                            <p>Наши операторы всегда на связи для вашего удобства.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Catalog Tab -->
+        <section id="catalog" class="tab-content">
+            <div class="container">
+                <h2 class="section-title">Каталог алкоголя</h2>
+                <div class="products-grid" id="products-grid">
+                    <!-- Products will be added here by JavaScript -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cart Tab -->
+        <section id="cart" class="tab-content">
+            <div class="container">
+                <h2 class="section-title">Ваша корзина</h2>
+                <ul class="cart-items" id="cart-items">
+                    <!-- Cart items will be added here by JavaScript -->
+                </ul>
+                <div class="cart-total" id="cart-total">Итого: 0 ₽</div>
+                <button class="checkout-btn" id="checkout-btn">Оформить заказ</button>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Связаться с нами</h2>
+            <p>У вас есть вопросы? Наши специалисты готовы помочь вам 24/7</p>
+            
+            <div class="contact-methods">
+                <div class="contact-card">
+                    <div class="contact-icon">📞</div>
+                    <h3>Телефон поддержки</h3>
+                    <p>+7 (XXX) XXX-XX-XX</p>
+                    <p>Круглосуточно</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">💬</div>
+                    <h3>WhatsApp</h3>
+                    <p>+7 (XXX) XXX-XX-XX</p>
+                    <p>Быстрая связь</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">✉️</div>
+                    <h3>Email</h3>
+                    <p>support@alcodelivery.ru</p>
+                    <p>Ответим в течение 1 часа</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 AlcoDelivery. Все права защищены.</p>
+            <p>Доставка алкоголя по городу | Только для совершеннолетних</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                const tabId = link.getAttribute('data-tab');
+                
+                // Hide all tabs
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Remove active class from all links
+                document.querySelectorAll('.tab-link').forEach(tabLink => {
+                    tabLink.classList.remove('active');
+                });
+                
+                // Show selected tab
+                document.getElementById(tabId).classList.add('active');
+                
+                // Add active class to clicked link
+                link.classList.add('active');
+                
+                // Update cart count if going to cart tab
+                if (tabId === 'cart') {
+                    updateCartDisplay();
+                }
+            });
+        });
+        
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('nav-menu').classList.toggle('active');
+        });
+        
+        // Sample products data
+        const products = [
+            { id: 1, name: 'Водка "Премиум"', price: 850, image: '🍸' },
+            { id: 2, name: 'Вино красное сухое', price: 1200, image: '🍷' },
+            { id: 3, name: 'Шампанское', price: 1500, image: '🍾' },
+            { id: 4, name: 'Виски старый', price: 2500, image: '🥃' },
+            { id: 5, name: 'Пиво разливное', price: 250, image: '🍺' },
+            { id: 6, name: 'Коньяк 5 лет', price: 1800, image: '🥃' },
+            { id: 7, name: 'Текила', price: 1300, image: '🥃' },
+            { id: 8, name: 'Ром', price: 950, image: '🥃' }
+        ];
+        
+        // Shopping cart
+        let cart = [];
+        
+        // Render products
+        function renderProducts() {
+            const productsGrid = document.getElementById('products-grid');
+            productsGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">${product.image}</div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.name}</h3>
+                        <div class="product-price">${product.price} ₽</div>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart(${product.id})">В корзину</button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+        }
+        
+        // Add to cart function
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                const existingItem = cart.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({ ...product, quantity: 1 });
+                }
+                updateCartCount();
+                alert(`Товар "${product.name}" добавлен в корзину!`);
+            }
+        }
+        
+        // Update cart count
+        function updateCartCount() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.querySelector('.cart-count').textContent = count;
+        }
+        
+        // Update cart display
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<li class="cart-item"><p>Корзина пуста</p></li>';
+                cartTotal.textContent = 'Итого: 0 ₽';
+                return;
+            }
+            
+            let total = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const cartItem = document.createElement('li');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div class="cart-item-price">${item.price} ₽ × ${item.quantity}</div>
+                    </div>
+                    <div class="cart-item-quantity">
+                        <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                        <button class="remove-item" onclick="removeFromCart(${item.id})">✕</button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+            
+            cartTotal.textContent = `Итого: ${total} ₽`;
+        }
+        
+        // Change quantity
+        function changeQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(item => item.id !== productId);
+                }
+                updateCartCount();
+                updateCartDisplay();
+            }
+        }
+        
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartCount();
+            updateCartDisplay();
+        }
+        
+        // Checkout button
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('Ваша корзина пуста!');
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            alert(`Заказ оформлен на сумму ${total} ₽! Наш менеджер свяжется с вами для подтверждения.`);
+            
+            // Clear cart
+            cart = [];
+            updateCartCount();
+            updateCartDisplay();
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
+
